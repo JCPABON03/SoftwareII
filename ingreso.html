@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Asignar Notas</title>
+  <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+      padding: 8px;
+    }
+    input[type="number"] {
+      width: 60px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Asignar Notas por Cortes</h2>
+
+  <input type="file" id="excelFile" accept=".xlsx"><br><br>
+
+  <table id="tablaEstudiantes">
+    <thead>
+      <tr>
+        <th>Estudiante</th>
+        <th>Corte 1</th>
+        <th>Corte 2</th>
+        <th>Corte 3</th>
+        <th>Corte 4</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Juan Pérez</td>
+        <td><input type="number" min="0" max="100" class="corte1"></td>
+        <td><input type="number" min="0" max="100" class="corte2" disabled></td>
+        <td><input type="number" min="0" max="100" class="corte3" disabled></td>
+        <td><input type="number" min="0" max="100" class="corte4" disabled></td>
+      </tr>
+      <tr>
+        <td>María Gómez</td>
+        <td><input type="number" min="0" max="100" class="corte1"></td>
+        <td><input type="number" min="0" max="100" class="corte2" disabled></td>
+        <td><input type="number" min="0" max="100" class="corte3" disabled></td>
+        <td><input type="number" min="0" max="100" class="corte4" disabled></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script>
+    document.querySelectorAll('tr').forEach(row => {
+      const inputs = row.querySelectorAll('input[type="number"]');
+      if (inputs.length === 4) {
+        inputs[0].addEventListener('input', () => {
+          inputs[1].disabled = inputs[0].value === '';
+        });
+        inputs[1].addEventListener('input', () => {
+          inputs[2].disabled = inputs[1].value === '';
+        });
+        inputs[2].addEventListener('input', () => {
+          inputs[3].disabled = inputs[2].value === '';
+        });
+      }
+    });
+
+    document.getElementById('excelFile').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+        const tbody = document.querySelector('#tablaEstudiantes tbody');
+        tbody.innerHTML = '';
+        json.slice(1).forEach(row => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${row[0]}</td>
+            <td><input type="number" value="${row[1] || ''}" class="corte1"></td>
+            <td><input type="number" value="${row[2] || ''}" class="corte2" ${row[1] ? '' : 'disabled'}></td>
+            <td><input type="number" value="${row[3] || ''}" class="corte3" ${row[2] ? '' : 'disabled'}></td>
+            <td><input type="number" value="${row[4] || ''}" class="corte4" ${row[3] ? '' : 'disabled'}></td>
+          `;
+          tbody.appendChild(tr);
+        });
+      };
+      reader.readAsArrayBuffer(file);
+    });
+  </script>
+</body>
+</html>

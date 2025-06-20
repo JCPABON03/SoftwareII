@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Seleccionar Materia y Curso</title>
+  <script>
+    function actualizarFechaFin() {
+      const fechaInicio = document.getElementById("fecha_inicio");
+      const fechaFin = document.getElementById("fecha_fin");
+
+      // Establecer la fecha mínima permitida en la fecha de fin
+      fechaFin.min = fechaInicio.value;
+
+      // Si la fecha fin actual es menor que la fecha inicio, limpiarla
+      if (fechaFin.value < fechaInicio.value) {
+        fechaFin.value = "";
+      }
+    }
+  </script>
+</head>
+<body>
+  <h2>Seleccionar Materia y Curso</h2>
+  <form action="ingreso.html" method="get">
+    <label for="materia">Materia:</label>
+    <select id="materia" name="materia" required>
+      <option value="">--Seleccione--</option>
+      <option value="matematicas">Matemáticas</option>
+      <option value="ciencias">Ciencias</option>
+    </select><br><br>
+
+    <label for="curso">Curso:</label>
+    <select id="curso" name="curso" required>
+      <option value="">--Seleccione--</option>
+      <option value="curso1">Curso 1</option>
+      <option value="curso2">Curso 2</option>
+    </select><br><br>
+
+    <!-- Campos de fecha con validación -->
+    <label for="fecha_inicio">Fecha de Inicio:</label>
+    <input type="date" id="fecha_inicio" name="fecha_inicio" required onchange="actualizarFechaFin()"><br><br>
+
+    <label for="fecha_fin">Fecha de Fin:</label>
+    <input type="date" id="fecha_fin" name="fecha_fin" required><br><br>
+
+    <button type="submit">Ver Estudiantes</button>
+  </form>
+</body>
+</html>

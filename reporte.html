@@ -30,7 +30,7 @@
       background-color: #f4f4f4;
     }
 
-    select, button {
+    select, button, input[type="date"] {
       margin: 10px 5px;
       padding: 8px;
       font-size: 14px;
@@ -55,6 +55,12 @@
       <option disabled selected>Materia</option>
       <option>Matemáticas</option>
     </select>
+
+    <label for="fechaInicio">Fecha Inicio:</label>
+    <input type="date" id="fechaInicio" name="fechaInicio">
+
+    <label for="fechaFin">Fecha Fin:</label>
+    <input type="date" id="fechaFin" name="fechaFin">
 
     <button onclick="mostrarReporte()">Mostrar Reporte</button>
 
@@ -104,9 +110,25 @@
     function mostrarReporte() {
       const curso = document.getElementById('curso').value;
       const materia = document.getElementById('materia').value;
-      if (curso && materia) {
-        document.getElementById('reporteBox').style.display = 'block';
+      const fechaInicio = document.getElementById('fechaInicio').value;
+      const fechaFin = document.getElementById('fechaFin').value;
+
+      if (!curso || !materia) {
+        alert('Por favor selecciona curso y materia.');
+        return;
       }
+
+      if (!fechaInicio || !fechaFin) {
+        alert('Por favor selecciona ambas fechas.');
+        return;
+      }
+
+      if (fechaFin < fechaInicio) {
+        alert('La fecha fin no puede ser anterior a la fecha de inicio.');
+        return;
+      }
+
+      document.getElementById('reporteBox').style.display = 'block';
     }
 
     function exportarExcel() {
